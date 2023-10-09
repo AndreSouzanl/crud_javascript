@@ -1,0 +1,19 @@
+
+table{
+    margin-top: 15px;
+    box-shadow: 0 0 10px 0 rgb(50 50 50 /82%);
+    
+}
+
+table thead{
+    background-color: #ddd;
+}
+
+.botao{
+    margin-top: 15px;
+    margin-bottom:30px;
+}
+
+.container{
+    padding: 30px;
+}
