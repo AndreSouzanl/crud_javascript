@@ -1,5 +1,5 @@
 let tbody = document.querySelector("table>tbody");
-let btnAdicionar = document.getElementById('btn-adicionar');
+let btnAdicionar = document.getElementById("btn-adicionar");
 let form = {
     nome:document.getElementById("nome"),
     quantidade:document.getElementById("quantidade"),
@@ -12,18 +12,19 @@ let listaProdutos = [];
 
 btnAdicionar.addEventListener('click', () =>{
   abrirModal();
+ 
 });
 
 
 form.btnSalvar.addEventListener('click', () =>{
-
+  
   let produto = {
     nome:form.nome.value,
     quantidadeEstoque:form.quantidade.value,
     valor:form.valor.value
   }
   
-  
+ 
     // verificar se os campos foram preenchido
   if(!produto.nome || !produto.quantidadeEstoque || !produto.valor){
     //senao foi mandar mensagem para o usuario preencher
