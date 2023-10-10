@@ -1,5 +1,7 @@
 let tbody = document.querySelector("table>tbody");
-let btnAdicionar = document.getElementById("btn-adicionar");
+
+let btnAdicionar = document.querySelector("#btn-adicionar");
+
 let form = {
     nome:document.getElementById("nome"),
     quantidade:document.getElementById("quantidade"),
@@ -12,9 +14,7 @@ let listaProdutos = [];
 
 btnAdicionar.addEventListener('click', () =>{
   abrirModal();
- 
 });
-
 
 form.btnSalvar.addEventListener('click', () =>{
   
@@ -121,13 +121,12 @@ function excluirProduto(id){
 }
 
 function abrirModal(){
-  $("#modal-produtos").modal({backdrop:"static"});
+   $("#modal-produtos").modal("show");
+ 
 }
 
 function fecharModal(){
-  $("#modal-produtos").modal("hide");
-
- 
+   $("#modal-produtos").modal("hide");
 }
 
 
