@@ -3,6 +3,7 @@ let tbody = document.querySelector("table>tbody");
 let btnAdicionar = document.querySelector("#btn-adicionar");
 
 let form = {
+    id:document.getElementById("id"),
     nome:document.getElementById("nome"),
     quantidade:document.getElementById("quantidade"),
     valor:document.getElementById("valor"),
@@ -11,14 +12,18 @@ let form = {
 }
 
 let listaProdutos = [];
+let modoEdicao = false;
 
 btnAdicionar.addEventListener('click', () =>{
+  modoEdicao = false;
+  limparCampos();
   abrirModal();
 });
 
 form.btnSalvar.addEventListener('click', () =>{
   
   let produto = {
+    id:form.id.value,
     nome:form.nome.value,
     quantidadeEstoque:form.quantidade.value,
     valor:form.valor.value
@@ -33,7 +38,8 @@ form.btnSalvar.addEventListener('click', () =>{
   }
 
    //caso contrario enviar os dados para salvar no backend.
-   cadastrarProdutoNaAPI(produto)
+   modoEdicao ? atualizarProdutoNaAPI(produto) :
+   cadastrarProdutoNaAPI(produto);
 
   
 });
@@ -59,6 +65,25 @@ function cadastrarProdutoNaAPI(produto){
 
 }
 
+function atualizarProdutoNaAPI(produto){
+
+  fetch(`http://localhost:3000/produtos/${produto.id}`, {
+    headers:{
+       "Content-type":"application/json",
+    },
+    method:"PUT",
+    body:JSON.stringify(produto)
+  })
+    .then((response) => response.json())
+    .then((response) => {
+       atualizarProdutoNaTela(response, false)
+       fecharModal();
+    })
+    .catch((erro) => {
+      console.log("deu ruim")
+    })
+}
+
 
 function obterProdutosDaApi() {
   fetch("http://localhost:3000/produtos")
@@ -69,6 +94,15 @@ function obterProdutosDaApi() {
       preencherTabela(listaProdutos);
     })
     .catch((erro) => console.log(erro));
+}
+
+function atualizarProdutoNaTela(produto, deletarProduto){
+  let index = listaProdutos.findIndex(p => p.id == produto.id)
+
+  deletarProduto ?
+     listaProdutos.splice(index, 1) : //remove produto
+     listaProdutos.splice(index, 1, produto); //atualizando o produto na lista
+  preencherTabela(listaProdutos);
 }
 
 function preencherTabela(produtos) {
@@ -107,17 +141,51 @@ function preencherTabela(produtos) {
 }
 
 function limparCampos(){
+  form.id.value = "";
   form.nome.value = "";
   form.quantidade.value = "";
   form.valor.value = "";
 }
 
+function deletarProdutoNaAPI(produto){
+  fetch(`http://localhost:3000/produtos/${produto.id}`, {
+    headers:{
+       "Content-type":"application/json",
+    },
+    method:"DELETE",
+    
+  })
+    .then((response) => response.json())
+    .then(() => {
+       atualizarProdutoNaTela(produto, true)
+       
+    })
+    .catch((erro) => {
+      console.log("deu ruim")
+    })
+}
+
+function atualizarModal(produto){
+   form.id.value = produto.id;
+   form.nome.value = produto.nome;
+   form.quantidade.value = produto.quantidadeEstoque;
+   form.valor.value = produto.valor;
+}
+
 function editarProduto(id){
-  alert(id)
+  modoEdicao = true;
+  let produto = listaProdutos.find(p => p.id == id);
+  atualizarModal(produto)
+  abrirModal()
+  
 }
 
 function excluirProduto(id){
-  alert(id)
+  let produto = listaProdutos.find(p => p.id == id);
+
+  if(confirm(`Deseja excluir o produto ${produto.id} - ${produto.nome}`)){
+     deletarProdutoNaAPI(produto)
+  }
 }
 
 function abrirModal(){
